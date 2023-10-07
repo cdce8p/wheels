@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   publish:
@@ -58,6 +59,7 @@ jobs:
 
       - name: Build Docker image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        if: false
         with:
           context: . # So action will not pull the repository again
           push: ${{ github.event_name != 'pull_request' }}
