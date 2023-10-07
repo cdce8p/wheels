@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   publish:
@@ -74,5 +75,6 @@ jobs:
             .
 
       - shell: bash
+        if: false
         run: |
           docker push ${{ steps.info.outputs.name }}:${{ steps.info.outputs.version }}
