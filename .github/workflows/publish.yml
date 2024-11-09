@@ -41,7 +41,7 @@ jobs:
         run: |
           declare -a docker
 
-          name="ghcr.io/home-assistant/wheels/${{ matrix.arch }}/${{ matrix.tag }}/${{ matrix.abi }}"
+          name="ghcr.io/cdce8p/wheels/${{ matrix.arch }}/${{ matrix.tag }}/${{ matrix.abi }}"
 
           version=$(echo "${{ github.ref }}" | awk -F"/" '{print $NF}' )
           if [ "${version}" = "master" ]; then
@@ -85,6 +85,5 @@ jobs:
             .
 
       - shell: bash
-        if: false
         run: |
           docker push ${{ steps.info.outputs.name }}:${{ steps.info.outputs.version }}
