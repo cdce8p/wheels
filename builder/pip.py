@@ -92,7 +92,7 @@ def parse_requirements(requirement: Path) -> list[str]:
                 continue
 
             if not line.startswith("-r"):
-                requirement_list.add(line.split(" ")[-1])
+                requirement_list.add(line)
                 continue
 
             # References new requirements file
