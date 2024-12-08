@@ -46,6 +46,33 @@ RUN \
         -r /usr/src/requirements_${CPYTHON_ABI}.txt \
     && rm -rf /usr/src/*
 
+# Build libjxl from source
+RUN \
+    apk add --no-cache \
+        ffmpeg-dev \
+        brotli-dev \
+        clang \
+        giflib-dev \
+        libjpeg-turbo-dev \
+        openexr-dev \
+        libpng-dev \
+        libwebp-dev \
+        libavif-dev \
+    && ls -l /usr/lib/libjxl* \
+    && rm /usr/lib/libjxl*.so.0.10.2 \
+    && ls -l /usr/lib/libjxl* \
+    && git clone https://github.com/libjxl/libjxl.git \
+        --recursive --depth 1 --shallow-submodules --branch v0.10.2 \
+    && mkdir libjxl/build \
+    && cd libjxl/build \
+    && export CC=clang CXX=clang++ \
+    && cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF .. \
+    && cmake --build . -- -j$(nproc) \
+    && ls -l lib/libjxl*.so.0.10.2 \
+    && cp lib/libjxl*.so.0.10.2 /usr/lib \
+    && ls -l /usr/lib/libjxl*\
+    && rm -rf libjxl
+
 # Install auditwheel
 COPY 0001-Support-musllinux-armv6l.patch /usr/src/
 RUN \
