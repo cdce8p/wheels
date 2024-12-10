@@ -84,6 +84,9 @@ from builder.wheel import (
 @click.option(
     "--timeout", default=345, type=int, help="Max runtime for pip before abort."
 )
+@click.option(
+    "--no-build-isolation", is_flag=True, default=False, help="Disable build isolation"
+)
 def builder(
     apk: str | None,
     pip: str | None,
@@ -99,8 +102,10 @@ def builder(
     upload: str,
     remote: str,
     timeout: int,
+    no_build_isolation: bool,
 ):
     """Build wheels precompiled for Home Assistant container."""
+    print(f"{no_build_isolation=}")
     check_url(index)
 
     exit_code = 0
@@ -145,6 +150,7 @@ def builder(
                         wheels_dir,
                         skip_binary_new,
                         timeout,
+                        no_build_isolation,
                         constraint,
                     )
                 except CalledProcessError:
@@ -170,6 +176,7 @@ def builder(
                     wheels_dir,
                     skip_binary_new,
                     timeout,
+                    no_build_isolation,
                     constraint,
                 )
             except CalledProcessError:
@@ -195,6 +202,7 @@ def builder(
                     wheels_dir,
                     package,
                     timeout,
+                    no_build_isolation,
                 )
             if not run_auditwheel(wheels_dir):
                 exit_code = 109
