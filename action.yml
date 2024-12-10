@@ -43,6 +43,9 @@ inputs:
   single:
     description: "Set to true if should build each wheel as a single prosess"
     default: false
+  no-build-isolation:
+    description: "Disable pip build isolation"
+    default: false
   name:
     description: "Job name"
     default: "Wheels"
@@ -132,6 +135,9 @@ runs:
         fi
         if [[ "${{ inputs.test }}" =~ true|True ]]; then
           build+=("--test")
+        fi
+        if [[ "${{ inputs.no-build-isolation }}" =~ true|True ]]; then
+          build+=("--no-build-isolation")
         fi
         if [ -n "${{ inputs.skip-binary }}" ]; then
           build+=("--skip-binary \"${{ inputs.skip-binary }}\"")
