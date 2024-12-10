@@ -11,12 +11,13 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-def build_wheels_package(
+def build_wheels_package(  # noqa: PLR0913
     package: str,
     index: str,
     output: Path,
     skip_binary: str,
     timeout: int,
+    no_build_isolation: bool,
     constraint: Path | None = None,
 ) -> None:
     """Build wheels from a requirements file into output."""
@@ -26,23 +27,27 @@ def build_wheels_package(
     build_env = os.environ.copy()
     build_env["MAKEFLAGS"] = f"-j{cpu}"
 
+    # Disable build isolation
+    extra_cmd = "--no-build-isolation -v" if no_build_isolation else ""
+
     # Add constraint
     constraint_cmd = f"--constraint {constraint}" if constraint else ""
 
     run_command(
         f'pip3 wheel --no-clean --no-binary "{skip_binary}" --wheel-dir {output} '
-        f'--extra-index-url {index} {constraint_cmd} "{package}"',
+        f'--extra-index-url {index} {extra_cmd} {constraint_cmd} "{package}"',
         env=build_env,
         timeout=timeout,
     )
 
 
-def build_wheels_requirement(
+def build_wheels_requirement(  # noqa: PLR0913
     requirement: Path,
     index: str,
     output: Path,
     skip_binary: str,
     timeout: int,
+    no_build_isolation: bool,
     constraint: Path | None = None,
 ) -> None:
     """Build wheels from a requirements file into output."""
@@ -52,12 +57,16 @@ def build_wheels_requirement(
     build_env = os.environ.copy()
     build_env["MAKEFLAGS"] = f"-j{cpu}"
 
+    # Disable build isolation
+    extra_cmd = "--no-build-isolation -v" if no_build_isolation else ""
+
     # Add constraint
     constraint_cmd = f"--constraint {constraint}" if constraint else ""
 
     run_command(
         f'pip3 wheel --no-clean --no-binary "{skip_binary}" --wheel-dir {output} '
-        f"--extra-index-url {index} {constraint_cmd} --requirement {requirement}",
+        f"--extra-index-url {index} {extra_cmd} {constraint_cmd} "
+        f"--requirement {requirement}",
         env=build_env,
         timeout=timeout,
     )

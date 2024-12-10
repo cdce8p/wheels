@@ -123,6 +123,12 @@ class ExitCodes(IntEnum):
     type=int,
     help="Max runtime for pip before abort.",
 )
+@click.option(
+    "--no-build-isolation",
+    is_flag=True,
+    default=False,
+    help="Disable build isolation",
+)
 def builder(  # noqa: C901, PLR0913, PLR0912, PLR0915
     apk: str | None,
     pip: str | None,
@@ -138,8 +144,10 @@ def builder(  # noqa: C901, PLR0913, PLR0912, PLR0915
     upload: str,
     remote: str,
     timeout: int,
+    no_build_isolation: bool,
 ) -> None:
     """Build wheels precompiled for Home Assistant container."""
+    print(f"{no_build_isolation=}")
     check_url(index)
     if (override := _OVERRIDE_SKIP_BINARY.get(index)) is not None:
         if skip_binary != _DEFAULT_SKIP_BINARY:
@@ -195,6 +203,7 @@ def builder(  # noqa: C901, PLR0913, PLR0912, PLR0915
                         wheels_dir,
                         skip_binary_new,
                         timeout,
+                        no_build_isolation,
                         constraint,
                     )
                 except CalledProcessError:
@@ -220,6 +229,7 @@ def builder(  # noqa: C901, PLR0913, PLR0912, PLR0915
                     wheels_dir,
                     skip_binary_new,
                     timeout,
+                    no_build_isolation,
                     constraint,
                 )
             except CalledProcessError:
@@ -245,6 +255,7 @@ def builder(  # noqa: C901, PLR0913, PLR0912, PLR0915
                     wheels_dir,
                     package,
                     timeout,
+                    no_build_isolation,
                 )
             if not run_auditwheel(wheels_dir):
                 exit_code = ExitCodes.ERROR_BUILD_FAILED
