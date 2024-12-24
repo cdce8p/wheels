@@ -84,6 +84,7 @@ from builder.wheel import (
 @click.option(
     "--timeout", default=345, type=int, help="Max runtime for pip before abort."
 )
+@click.option("--verbose", is_flag=True, default=False, help="Verbose pip wheel output")
 @click.option(
     "--no-build-isolation", is_flag=True, default=False, help="Disable build isolation"
 )
@@ -102,6 +103,7 @@ def builder(
     upload: str,
     remote: str,
     timeout: int,
+    verbose: bool,
     no_build_isolation: bool,
 ):
     """Build wheels precompiled for Home Assistant container."""
@@ -150,6 +152,7 @@ def builder(
                         wheels_dir,
                         skip_binary_new,
                         timeout,
+                        verbose,
                         no_build_isolation,
                         constraint,
                     )
@@ -176,6 +179,7 @@ def builder(
                     wheels_dir,
                     skip_binary_new,
                     timeout,
+                    verbose,
                     no_build_isolation,
                     constraint,
                 )
@@ -189,7 +193,7 @@ def builder(
         if exit_code != 0:
             copy_wheels_from_cache(Path("/root/.cache/pip/wheels"), wheels_dir)
 
-        if not run_auditwheel(wheels_dir):
+        if not run_auditwheel(wheels_dir, verbose):
             exit_code = 109
 
         # Check if all wheels are on our min requirements
@@ -202,9 +206,10 @@ def builder(
                     wheels_dir,
                     package,
                     timeout,
+                    verbose,
                     no_build_isolation,
                 )
-            if not run_auditwheel(wheels_dir):
+            if not run_auditwheel(wheels_dir, verbose):
                 exit_code = 109
 
         if skip_binary != ":none:":
