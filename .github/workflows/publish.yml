@@ -21,7 +21,7 @@ jobs:
         include:
           - abi: cp313
             tag: musllinux_1_2
-            base: 3.13-alpine3.21
+            base: 3.13-alpine3.22
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4.2.2
@@ -38,7 +38,7 @@ jobs:
             version=dev
           fi
 
-          base="ghcr.io/home-assistant/${{ matrix.arch }}-base-python:${{ matrix.base }}"
+          base="ghcr.io/cdce8p/${{ matrix.arch }}-base-python:${{ matrix.base }}"
 
           if [ "${{ matrix.arch }}" = "armhf" ]; then
             docker+=("--build-arg QEMU_CPU=arm1176")
