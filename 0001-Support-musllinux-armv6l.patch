@@ -4,24 +4,37 @@ Date: Wed, 15 Jun 2022 12:48:56 +0000
 Subject: [PATCH] Support musllinux armv6l
 
 ---
+ src/auditwheel/architecture.py              | 1 +
  src/auditwheel/policy/__init__.py           | 1 +
  src/auditwheel/policy/musllinux-policy.json | 4 ++++
- 2 files changed, 5 insertions(+)
+ 3 files changed, 6 insertions(+)
 
+diff --git a/src/auditwheel/architecture.py b/src/auditwheel/architecture.py
+index 4a506e8..f0c39d6 100644
+--- a/src/auditwheel/architecture.py
++++ b/src/auditwheel/architecture.py
+@@ -11,6 +11,7 @@ class Architecture(Enum):
+     value: str
+ 
+     aarch64 = "aarch64"
++    armv6l = "armv6l"
+     armv7l = "armv7l"
+     i686 = "i686"
+     loongarch64 = "loongarch64"
 diff --git a/src/auditwheel/policy/__init__.py b/src/auditwheel/policy/__init__.py
-index f38ab43..8ed9db8 100644
+index 29a743c..49351b8 100644
 --- a/src/auditwheel/policy/__init__.py
 +++ b/src/auditwheel/policy/__init__.py
-@@ -285,6 +285,7 @@ def _fixup_musl_libc_soname(libc: Libc, arch: str, whitelist):
-             "aarch64": "libc.musl-aarch64.so.1",
-             "s390x": "libc.musl-s390x.so.1",
-             "ppc64le": "libc.musl-ppc64le.so.1",
-+            "armv6l": "libc.musl-armvhf.so.1",
-             "armv7l": "libc.musl-armv7.so.1",
-             "riscv64": "libc.musl-riscv64.so.1",
-         }
+@@ -295,6 +295,7 @@ def _fixup_musl_libc_soname(
+             Architecture.aarch64: "libc.musl-aarch64.so.1",
+             Architecture.s390x: "libc.musl-s390x.so.1",
+             Architecture.ppc64le: "libc.musl-ppc64le.so.1",
++            Architecture.armv6l: "libc.musl-armvhf.so.1",
+             Architecture.armv7l: "libc.musl-armv7.so.1",
+             Architecture.riscv64: "libc.musl-riscv64.so.1",
+             Architecture.loongarch64: "libc.musl-loongarch64.so.1",
 diff --git a/src/auditwheel/policy/musllinux-policy.json b/src/auditwheel/policy/musllinux-policy.json
-index f2f6a06..c02436e 100644
+index a55e5fb..2584904 100644
 --- a/src/auditwheel/policy/musllinux-policy.json
 +++ b/src/auditwheel/policy/musllinux-policy.json
 @@ -20,6 +20,8 @@
@@ -42,7 +55,3 @@ index f2f6a06..c02436e 100644
        "armv7l": {
        },
        "riscv64": {
-
-base-commit: 7d50cf2e4ba1d46ec9ac361661e563fea84c6eca
--- 
-2.45.2
