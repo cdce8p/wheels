@@ -78,6 +78,7 @@ runs:
         if [[ "${input}" == "master" ]] || [[ -z "${input}" ]]; then
           input="dev"
         fi
+        input="auditwheel"
         echo "version=${input}" >> $GITHUB_OUTPUT
 
     - shell: bash
