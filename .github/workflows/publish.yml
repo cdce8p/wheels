@@ -48,7 +48,11 @@ jobs:
             version=dev
           fi
 
-          base="ghcr.io/home-assistant/${{ matrix.arch }}-base-python:${{ matrix.base }}"
+          if [ "${{ matrix.abi }}" = "cp313" ]; then
+            base="ghcr.io/home-assistant/${{ matrix.arch }}-base-python:${{ matrix.base }}"
+          else
+            base="ghcr.io/cdce8p/${{ matrix.arch }}-base-python:${{ matrix.base }}"
+          fi
 
           if [ "${{ matrix.arch }}" = "armhf" ]; then
             docker+=("--build-arg QEMU_CPU=arm1176")
@@ -58,6 +62,7 @@ jobs:
             docker+=("--cache-from $name:dev")
           fi
 
+          echo "base: ${base}"
           echo "name=$name" >> $GITHUB_OUTPUT
           echo "version=$version" >> $GITHUB_OUTPUT
           echo "base=$base" >> $GITHUB_OUTPUT
