@@ -101,7 +101,7 @@ def copy_wheels_from_cache(cache_folder: Path, wheels_folder: Path) -> None:
             shutil.copy(wheel_file, wheels_folder)
 
 
-def run_auditwheel(wheels_folder: Path) -> bool:
+def run_auditwheel(wheels_folder: Path, verbose: bool = False) -> bool:
     """Run auditwheel to include shared library."""
     success = True
     with TemporaryDirectory() as temp_dir:
@@ -109,7 +109,10 @@ def run_auditwheel(wheels_folder: Path) -> bool:
             if not _RE_LINUX_PLATFORM.search(wheel_file.name):
                 continue
             try:
-                run_command(f"auditwheel repair -w {temp_dir} {wheel_file}")
+                run_command(
+                    f"auditwheel {'-v' if verbose else ''} "
+                    f"repair -w {temp_dir} {wheel_file}"
+                )
             except CalledProcessError as err:
                 print(f"Issues auditwheel {wheel_file.name}: {str(err)}", flush=True)
                 success = False

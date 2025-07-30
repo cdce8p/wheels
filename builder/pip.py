@@ -14,6 +14,7 @@ def build_wheels_package(
     output: Path,
     skip_binary: str,
     timeout: int,
+    verbose: bool,
     no_build_isolation: bool,
     constraint: Path | None = None,
 ) -> None:
@@ -25,13 +26,19 @@ def build_wheels_package(
     build_env["MAKEFLAGS"] = f"-j{cpu}"
 
     # Disable build isolation
-    extra_cmd = f"--no-build-isolation -v" if no_build_isolation else ""
+    extra_cmd: list[str] = []
+    if verbose:
+        extra_cmd.append("-v")
+    if no_build_isolation:
+        extra_cmd.append("--no-build-isolation")
 
     # Add constraint
     constraint_cmd = f"--constraint {constraint}" if constraint else ""
 
     run_command(
-        f'pip3 wheel --no-clean --no-binary "{skip_binary}" --wheel-dir {output} --extra-index-url {index} {extra_cmd} {constraint_cmd} "{package}"',
+        f'pip3 wheel --no-clean --no-binary "{skip_binary}" --wheel-dir {output} '
+        f'--extra-index-url {index} {" ".join(extra_cmd)} '
+        f'{constraint_cmd} "{package}"',
         env=build_env,
         timeout=timeout,
     )
@@ -43,6 +50,7 @@ def build_wheels_requirement(
     output: Path,
     skip_binary: str,
     timeout: int,
+    verbose: bool,
     no_build_isolation: bool,
     constraint: Path | None = None,
 ) -> None:
@@ -54,13 +62,19 @@ def build_wheels_requirement(
     build_env["MAKEFLAGS"] = f"-j{cpu}"
 
     # Disable build isolation
-    extra_cmd = f"--no-build-isolation -v" if no_build_isolation else ""
+    extra_cmd: list[str] = []
+    if verbose:
+        extra_cmd.append("-v")
+    if no_build_isolation:
+        extra_cmd.append("--no-build-isolation")
 
     # Add constraint
     constraint_cmd = f"--constraint {constraint}" if constraint else ""
 
     run_command(
-        f'pip3 wheel --no-clean --no-binary "{skip_binary}" --wheel-dir {output} --extra-index-url {index} {extra_cmd} {constraint_cmd} --requirement {requirement}',
+        f'pip3 wheel --no-clean --no-binary "{skip_binary}" --wheel-dir {output} '
+        f'--extra-index-url {index} {" ".join(extra_cmd)} '
+        f"{constraint_cmd} --requirement {requirement}",
         env=build_env,
         timeout=timeout,
     )
