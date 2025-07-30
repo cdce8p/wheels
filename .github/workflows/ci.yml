@@ -50,7 +50,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        abi: ["cp313"]
+        abi: ["cp313", "cp314"]
         tag: ["musllinux_1_2"]
         arch: ["aarch64", "armhf", "armv7", "amd64", "i386"]
 
