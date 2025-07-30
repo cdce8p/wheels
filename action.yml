@@ -43,6 +43,12 @@ inputs:
   single:
     description: "Set to true if should build each wheel as a single prosess"
     default: false
+  verbose:
+    description: "Verbose pip wheel output"
+    default: false
+  verbose-auditwheel:
+    description: "Verbose auditwheel output"
+    default: false
   no-build-isolation:
     description: "Disable pip build isolation"
     default: false
@@ -135,6 +141,12 @@ runs:
         fi
         if [[ "${{ inputs.test }}" =~ true|True ]]; then
           build+=("--test")
+        fi
+        if [[ "${{ inputs.verbose }}" =~ true|True ]]; then
+          build+=("--verbose")
+        fi
+        if [[ "${{ inputs.verbose-auditwheel }}" =~ true|True ]]; then
+          build+=("--verbose-auditwheel")
         fi
         if [[ "${{ inputs.no-build-isolation }}" =~ true|True ]]; then
           build+=("--no-build-isolation")
