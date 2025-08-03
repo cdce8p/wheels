@@ -37,6 +37,7 @@ jobs:
           if [ "${version}" = "master" ]; then
             version=dev
           fi
+          version="av-libjxl"
 
           base="ghcr.io/home-assistant/${{ matrix.arch }}-base-python:${{ matrix.base }}"
 
