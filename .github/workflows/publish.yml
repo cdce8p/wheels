@@ -47,7 +47,7 @@ jobs:
           if [ "${version}" = "master" ]; then
             version=dev
           fi
-          version="master-python314"
+          version="av-libjxl-314"
 
           if [ "${{ matrix.abi }}" = "cp313" ]; then
             base="ghcr.io/home-assistant/${{ matrix.arch }}-base-python:${{ matrix.base }}"
