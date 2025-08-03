@@ -6,7 +6,8 @@ ARG \
     CPYTHON_ABI \
     QEMU_CPU \
     AUDITWHEEL_VERSION=6.4.2 \
-    PIP_EXTRA_INDEX_URL=https://wheels.home-assistant.io/musllinux-index/
+    PIP_EXTRA_INDEX_URL=https://wheels.home-assistant.io/musllinux-index/ \
+    LIBJXL_VERSION="0.10.3"
 
 WORKDIR /usr/src
 
@@ -46,6 +47,33 @@ RUN \
         -r /usr/src/requirements.txt \
         -r /usr/src/requirements_${CPYTHON_ABI}.txt \
     && rm -rf /usr/src/*
+
+# Build libjxl from source
+RUN \
+    apk add --no-cache \
+        ffmpeg-dev \
+        brotli-dev \
+        clang \
+        giflib-dev \
+        libjpeg-turbo-dev \
+        openexr-dev \
+        libpng-dev \
+        libwebp-dev \
+        libavif-dev \
+    && ls -l /usr/lib/libjxl* \
+    && rm /usr/lib/libjxl*.so.${LIBJXL_VERSION} \
+    && ls -l /usr/lib/libjxl* \
+    && git clone https://github.com/libjxl/libjxl.git \
+        --recursive --depth 1 --shallow-submodules --branch v${LIBJXL_VERSION} \
+    && mkdir libjxl/build \
+    && cd libjxl/build \
+    && export CC=clang CXX=clang++ \
+    && cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF .. \
+    && cmake --build . -- -j$(nproc) \
+    && ls -l lib/libjxl*.so.${LIBJXL_VERSION} \
+    && cp lib/libjxl*.so.${LIBJXL_VERSION} /usr/lib \
+    && ls -l /usr/lib/libjxl*\
+    && rm -rf libjxl
 
 # Install auditwheel
 COPY 0001-Support-musllinux-armv6l.patch /usr/src/
